@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const Car = require('../../models/Car')
+const Automobil = require('../../models/Automobil')
 
 router.get('/', async (req,res) => {
     try {
@@ -23,8 +23,8 @@ router.get('/', async (req,res) => {
         {
             upit['karoserija']=karoserija
         }
-        const cars = await Car.find(upit).sort([[sortBy,orderBy]])
-        res.json(cars)
+        const automobili = await Automobil.find(upit).sort([[sortBy,orderBy]])
+        res.json(automobili)
     } catch (error) {
         console.error(error.message)
     }
@@ -32,8 +32,8 @@ router.get('/', async (req,res) => {
 
 router.get('/:id', async (req,res)=>{
     try {
-        const car = await Car.findById(req.params.id)
-        res.json(car)
+        const automobil = await Automobil.findById(req.params.id)
+        res.json(automobil)
     } catch (error) {
         console.error(error.message)
     }
@@ -41,7 +41,7 @@ router.get('/:id', async (req,res)=>{
 
 
 router.post('/',(req,res)=>{
-    const newCar = new Car({
+    const noviAutomobil = new Automobil({
         marka:req.body.marka,
         model:req.body.model,
         godiste:req.body.godiste,
@@ -54,25 +54,25 @@ router.post('/',(req,res)=>{
         slika:req.body.slika
     })
     //.save() tako se insertuju podaci u kolekciju, nije bitno kako ih prepoznaje 
-    newCar.save().then(car => res.json(car))
+    noviAutomobil.save().then(automobil => res.json(automobil))
 })
 
 router.delete('/:id',(req,res)=>{
-    Car.findById(req.params.id)
-    .then(car => car.remove().then(()=>res.json({success:true})))
+    Automobil.findById(req.params.id)
+    .then(automobil => automobil.remove().then(()=>res.json({success:true})))
     .catch(error => res.status(404).json({success:false}))
 })
 
 router.put('/:id',async(req,res)=>{
     try {
-        const car = await Car.findById(req.params.id).lean()
+        const automobil = await Automobil.findById(req.params.id).lean()
         
-        if(!car)
+        if(!automobil)
         {
             return res.status(400).json({msg:"Pogresna sifra"})
         }
 
-        car = await Car.findOneAndUpdate({_id:req.params.id},req.body,{
+        automobil = await Automobil.findOneAndUpdate({_id:req.params.id},req.body,{
             new:true,
             runValidators: true    
         })
